@@ -61,7 +61,8 @@ Rcpp::List rangerCpp(uint treetype, Rcpp::NumericMatrix& input_x, Rcpp::NumericM
     uint num_random_splits, Eigen::SparseMatrix<double>& sparse_x, 
     bool use_sparse_data, bool order_snps, bool oob_error, uint max_depth, 
     std::vector<std::vector<size_t>>& inbag, bool use_inbag,
-    std::vector<double>& regularization_factor, bool use_regularization_factor, bool regularization_usedepth) {
+    std::vector<double>& regularization_factor, bool use_regularization_factor, bool regularization_usedepth,
+    Rcpp::NumericMatrix& condition_on) {
   
   Rcpp::List result;
 
