@@ -303,7 +303,8 @@ void Forest::run(bool verbose, bool compute_oob_error) {
     }
 
     if (importance_mode == IMP_PERM_BREIMAN || importance_mode == IMP_PERM_LIAW ||
-        importance_mode == IMP_PERM_RAW || importance_mode == IMP_PERM_CASEWISE) {
+        importance_mode == IMP_PERM_RAW || importance_mode == IMP_PERM_CASEWISE ||
+        importance_mode == IMP_PERM_COND) {
       if (verbose && verbose_out) {
         *verbose_out << "Computing permutation variable importance .." << std::endl;
       }

@@ -228,7 +228,11 @@ void Tree::computePermutationImportance(std::vector<double>& forest_importance, 
   for (size_t i = 0; i < num_independent_variables; ++i) {
 
     // Permute and compute prediction accuracy again for this permutation and save difference
-    permuteAndPredictOobSamples(i, permutations);
+    if (importance_mode == IMP_PERM_COND) {
+        permuteAndPredictOobSamples(i, permutations);
+    } else {
+        permuteAndPredictOobSamples(i, permutations);
+    }
     double accuracy_permuted;
     if (importance_mode == IMP_PERM_CASEWISE) {
       accuracy_permuted = computePredictionAccuracyInternal(&prederr_shuf_casewise);
