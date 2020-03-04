@@ -88,6 +88,10 @@ protected:
   size_t dropDownSamplePermuted(size_t permuted_varID, size_t sampleID, size_t permuted_sampleID);
   void permuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t>& permutations);
 
+  void determineConditionalVariables(size_t varID, std::vector<size_t>& conditionalIDs);
+  void permuteWithinGrid(size_t varID, std::vector<size_t>& conditionalIDs, std::vector<size_t>& permutations);
+  void conditionallyPermuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t>& permutations);
+
   virtual double computePredictionAccuracyInternal(std::vector<double>* prediction_error_casewise) = 0;
   
   void bootstrap();

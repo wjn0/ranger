@@ -229,7 +229,7 @@ void Tree::computePermutationImportance(std::vector<double>& forest_importance, 
 
     // Permute and compute prediction accuracy again for this permutation and save difference
     if (importance_mode == IMP_PERM_COND) {
-        permuteAndPredictOobSamples(i, permutations);
+        conditionallyPermuteAndPredictOobSamples(i, permutations);
     } else {
         permuteAndPredictOobSamples(i, permutations);
     }
@@ -424,6 +424,29 @@ void Tree::permuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t
 // Permute OOB sample
 //std::vector<size_t> permutations(oob_sampleIDs);
   std::shuffle(permutations.begin(), permutations.end(), random_number_generator);
+
+// For each sample, drop down the tree and add prediction
+  for (size_t i = 0; i < num_samples_oob; ++i) {
+    size_t nodeID = dropDownSamplePermuted(permuted_varID, oob_sampleIDs[i], permutations[i]);
+    prediction_terminal_nodeIDs[i] = nodeID;
+  }
+}
+
+void Tree::determineConditionalVariables(size_t varID, std::vector<size_t>& conditionalIDs) {
+  std::cout << "WARNING: CVI is not actually implemented yet!\n";
+}
+
+void Tree::permuteWithinGrid(size_t varID, std::vector<size_t>& conditionalIDs, std::vector<size_t>& permutations) {
+  std::shuffle(permutations.begin(), permutations.end(), random_number_generator);
+}
+
+void Tree::conditionallyPermuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t>& permutations) {
+
+// Permute OOB sample
+//std::vector<size_t> permutations(oob_sampleIDs);
+  std::vector<size_t> conditional_variableIDs;
+  determineConditionalVariables(permuted_varID, conditional_variableIDs);
+  permuteWithinGrid(permuted_varID, conditional_variableIDs, permutations);
 
 // For each sample, drop down the tree and add prediction
   for (size_t i = 0; i < num_samples_oob; ++i) {
