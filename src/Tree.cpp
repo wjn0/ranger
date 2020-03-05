@@ -475,14 +475,17 @@ void Tree::permuteWithinGrid(size_t varID, std::vector<size_t>& conditionalIDs, 
     std::vector<std::vector<bool>> signatures;
     for (size_t i = 0; i < num_samples_oob; ++i) {
       std::vector<bool> signature;
-      computeSignature(i, conditionalIDs, 0, signature);
+      computeSignature(oob_sampleIDs[i], conditionalIDs, 0, signature);
       signatures.push_back(signature);
     }
     std::vector<std::vector<bool>> uniqueSignatures(signatures);
     std::vector<std::vector<bool>>::iterator itSignature;
+    std::sort(uniqueSignatures.begin(), uniqueSignatures.end());
     itSignature = std::unique(uniqueSignatures.begin(), uniqueSignatures.end());
     uniqueSignatures.resize(std::distance(uniqueSignatures.begin(), itSignature));
+    int x = 0;
     for (itSignature = uniqueSignatures.begin(); itSignature != uniqueSignatures.end(); ++itSignature) {
+      x++;
       std::vector<size_t> sampleIDs;
       for (size_t i = 0; i < num_samples_oob; ++i) {
         if (*itSignature == signatures[i]) {
@@ -492,7 +495,7 @@ void Tree::permuteWithinGrid(size_t varID, std::vector<size_t>& conditionalIDs, 
       std::vector<size_t> shuffled_sampleIDs(sampleIDs);
       std::shuffle(shuffled_sampleIDs.begin(), shuffled_sampleIDs.end(), random_number_generator);
       for (size_t i = 0; i < sampleIDs.size(); ++i) {
-        permutations[sampleIDs[i]] = shuffled_sampleIDs[i];
+        permutations[sampleIDs[i]] = permutations[shuffled_sampleIDs[i]];
       }
     }
   } else {
