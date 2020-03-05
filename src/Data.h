@@ -34,6 +34,8 @@ public:
   virtual double get_x(size_t row, size_t col) const = 0;
   virtual double get_y(size_t row, size_t col) const = 0;
 
+  virtual bool get_conditional(size_t row, size_t col) const;
+
   size_t getVariableID(const std::string& variable_name) const;
 
   virtual void reserveMemory(size_t y_cols) = 0;

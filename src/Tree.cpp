@@ -433,11 +433,21 @@ void Tree::permuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t
 }
 
 void Tree::determineConditionalVariables(size_t varID, std::vector<size_t>& conditionalIDs) {
-  std::cout << "WARNING: CVI is not actually implemented yet!\n";
+  for (size_t j = 0; j < data->getNumCols(); ++j) {
+    if ((varID != j) &&
+        (std::find(split_varIDs.begin(), split_varIDs.end(), j) != split_varIDs.end()) &&
+        (data->get_conditional(varID, j))) {
+      conditionalIDs.push_back(j);
+    }
+  }
 }
 
 void Tree::permuteWithinGrid(size_t varID, std::vector<size_t>& conditionalIDs, std::vector<size_t>& permutations) {
-  std::shuffle(permutations.begin(), permutations.end(), random_number_generator);
+  if (conditionalIDs.size() > 0) {
+    std::cout << "There are variables to condition on, but I don't know how yet!\n";
+  } else {
+    std::shuffle(permutations.begin(), permutations.end(), random_number_generator);
+  }
 }
 
 void Tree::conditionallyPermuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t>& permutations) {
