@@ -442,8 +442,32 @@ void Tree::determineConditionalVariables(size_t varID, std::vector<size_t>& cond
   }
 }
 
-void Tree::computeSignature(size_t sampleID, size_t varID, std::vector<size_t>& conditionalIDs, std::vector<bool>& signature) {
-  std::cout << "How do you compute the signature?\n";
+void Tree::computeSignature(size_t sampleID, std::vector<size_t>& conditionalIDs, size_t nodeID, std::vector<bool>& signature) {
+  // If nodeID is a terminal node, do nothing and return
+  if (child_nodeIDs[0][nodeID] == 0 && child_nodeIDs[0][nodeID] == 0) return;
+  // If nodeID's varID is in conditionalIDs, append the split decision to signature
+  size_t split_varID = split_varIDs[nodeID];
+  if (std::find(conditionalIDs.begin(), conditionalIDs.end(), split_varID) != conditionalIDs.end()) {
+    double value = data->get_x(sampleID, split_varID);
+    if (data->isOrderedVariable(split_varID)) {
+      if (value <= split_values[nodeID]) {
+        signature.push_back(false);
+      } else {
+        signature.push_back(true);
+      }
+    } else {
+      size_t factorID = floor(value) - 1;
+      size_t splitID = floor(split_values[nodeID]);
+      if (!(splitID & (1ULL << factorID))) {
+        signature.push_back(false);
+      } else {
+        signature.push_back(true);
+      }
+    }
+  }
+  // Call computeSignature on left and right children
+  computeSignature(sampleID, conditionalIDs, child_nodeIDs[0][nodeID], signature);
+  computeSignature(sampleID, conditionalIDs, child_nodeIDs[1][nodeID], signature);
 }
 
 void Tree::permuteWithinGrid(size_t varID, std::vector<size_t>& conditionalIDs, std::vector<size_t>& permutations) {
@@ -451,10 +475,26 @@ void Tree::permuteWithinGrid(size_t varID, std::vector<size_t>& conditionalIDs, 
     std::vector<std::vector<bool>> signatures;
     for (size_t i = 0; i < num_samples_oob; ++i) {
       std::vector<bool> signature;
-      computeSignature(i, varID, conditionalIDs, signature);
+      computeSignature(i, conditionalIDs, 0, signature);
       signatures.push_back(signature);
     }
-    std::cout << "There are variables to condition on, but I don't know how yet!\n";
+    std::vector<std::vector<bool>> uniqueSignatures(signatures);
+    std::vector<std::vector<bool>>::iterator itSignature;
+    itSignature = std::unique(uniqueSignatures.begin(), uniqueSignatures.end());
+    uniqueSignatures.resize(std::distance(uniqueSignatures.begin(), itSignature));
+    for (itSignature = uniqueSignatures.begin(); itSignature != uniqueSignatures.end(); ++itSignature) {
+      std::vector<size_t> sampleIDs;
+      for (size_t i = 0; i < num_samples_oob; ++i) {
+        if (*itSignature == signatures[i]) {
+          sampleIDs.push_back(i);
+        }
+      }
+      std::vector<size_t> shuffled_sampleIDs(sampleIDs);
+      std::shuffle(shuffled_sampleIDs.begin(), shuffled_sampleIDs.end(), random_number_generator);
+      for (size_t i = 0; i < sampleIDs.size(); ++i) {
+        permutations[sampleIDs[i]] = shuffled_sampleIDs[i];
+      }
+    }
   } else {
     std::shuffle(permutations.begin(), permutations.end(), random_number_generator);
   }
