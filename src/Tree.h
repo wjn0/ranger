@@ -89,6 +89,7 @@ protected:
   void permuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t>& permutations);
 
   void determineConditionalVariables(size_t varID, std::vector<size_t>& conditionalIDs);
+  void computeSignature(size_t sampleID, size_t varID, std::vector<size_t>& conditionalIDs, std::vector<bool>& signature);
   void permuteWithinGrid(size_t varID, std::vector<size_t>& conditionalIDs, std::vector<size_t>& permutations);
   void conditionallyPermuteAndPredictOobSamples(size_t permuted_varID, std::vector<size_t>& permutations);
 

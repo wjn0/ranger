@@ -442,8 +442,18 @@ void Tree::determineConditionalVariables(size_t varID, std::vector<size_t>& cond
   }
 }
 
+void Tree::computeSignature(size_t sampleID, size_t varID, std::vector<size_t>& conditionalIDs, std::vector<bool>& signature) {
+  std::cout << "How do you compute the signature?\n";
+}
+
 void Tree::permuteWithinGrid(size_t varID, std::vector<size_t>& conditionalIDs, std::vector<size_t>& permutations) {
   if (conditionalIDs.size() > 0) {
+    std::vector<std::vector<bool>> signatures;
+    for (size_t i = 0; i < num_samples_oob; ++i) {
+      std::vector<bool> signature;
+      computeSignature(i, varID, conditionalIDs, signature);
+      signatures.push_back(signature);
+    }
     std::cout << "There are variables to condition on, but I don't know how yet!\n";
   } else {
     std::shuffle(permutations.begin(), permutations.end(), random_number_generator);
