@@ -34,7 +34,9 @@ public:
   virtual double get_x(size_t row, size_t col) const = 0;
   virtual double get_y(size_t row, size_t col) const = 0;
 
-  virtual bool get_conditional(size_t row, size_t col) const;
+  virtual bool get_conditional(size_t row, size_t col) const {
+    return true;
+  }
 
   size_t getVariableID(const std::string& variable_name) const;
 
