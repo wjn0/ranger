@@ -571,12 +571,12 @@ ranger <- function(formula = NULL, data = NULL, num.trees = 500, mtry = NULL,
       importance.mode <- 3
     }
   } else if (importance == "permutation_conditional") {
-    if (is.null(condition.on)) {
-      condition.on <- matrix(TRUE, nrow=ncol(x), ncol=ncol(x))
-    }
     importance.mode <- 7
   } else {
     stop("Error: Unknown importance mode.")
+  }
+  if (is.null(condition.on)) {
+    condition.on <- matrix(TRUE, nrow=ncol(x), ncol=ncol(x))
   }
   
   ## Case weights: NULL for no weights or all weights equal
