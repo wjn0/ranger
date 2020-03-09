@@ -572,7 +572,7 @@ ranger <- function(formula = NULL, data = NULL, num.trees = 500, mtry = NULL,
     }
   } else if (importance == "permutation_conditional") {
     if (is.null(condition.on)) {
-      stop("You must specify which variables to condition on.")
+      condition.on <- matrix(TRUE, nrow=ncol(x), ncol=ncol(x))
     }
     importance.mode <- 7
   } else {
